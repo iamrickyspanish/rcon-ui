@@ -8,6 +8,7 @@ import SessionForm from "Session/Form";
 
 export default function App() {
   const cookies = cookie.parse(document.cookie);
+  console.log("cookies", cookies);
   const hasSession = !!cookies.rcon_session_id?.length;
 
   return (

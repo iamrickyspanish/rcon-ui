@@ -1,20 +1,21 @@
-import axios from "axios";
-// window.axios = axios;
+import api from "api";
+
 export const create = async ({ host, port, password, game }) => {
   try {
-    return await axios.post(
-      "https://panel.frag.world/api/",
-      {
-        host,
-        port,
-        password,
-        game
-      },
-      {
-        withCredentials: true
+    return await api.post("/", {
+      type: "start",
+      data: {
+        game,
+        credentials: {
+          host,
+          port,
+          password
+        }
       }
-    );
+    });
   } catch (err) {
     return err;
   }
 };
+
+window.create = create;
