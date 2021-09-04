@@ -9,6 +9,10 @@ const api = axios.create({
   // }
 });
 
+api.interceptors.response.use(response => response, error => {
+  console.log(error)
+  return Promise.reject(error);
+})
 // api.defaults.withCredentials = true;
 
 export default api;
