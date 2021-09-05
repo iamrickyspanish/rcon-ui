@@ -8718,7 +8718,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@^16.6.1 || ^17.0.0", "react-dom@>= 16.4.1", "react-dom@>= 16.6.0", "react-dom@17.0.0":
+"react-dom@17.0.0":
   "integrity" "sha512-OGnFbxCjI2TMAZYMVxi4hqheJiN8rCEVVrL7XIGzCB6beNc4Am8M47HtkvxODZw9QgjmAPKpLba9FTu4fC1byA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.0.tgz"
   "version" "17.0.0"
@@ -8812,7 +8812,7 @@
   optionalDependencies:
     "fsevents" "2.1.2"
 
-"react@^16.6.1 || ^17.0.0", "react@>= 0.14.0", "react@>= 16.4.1", "react@>= 16.6.0", "react@17.0.0":
+"react@17.0.0":
   "integrity" "sha512-rG9bqS3LMuetoSUKHN8G3fMNuQOePKDThK6+2yXFWtoeTDLVNh/QCaxT+Jr+rNf4lwNXpx+atdn3Aa0oi8/6eQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.0.tgz"
   "version" "17.0.0"
@@ -10120,7 +10120,7 @@
     "loader-utils" "^1.1.0"
     "schema-utils" "^1.0.0"
 
-"styled-components@>= 4.X", "styled-components@>= 5.1", "styled-components@>= 5.x", "styled-components@5.2.1":
+"styled-components@5.2.1":
   "integrity" "sha512-sBdgLWrCFTKtmZm/9x7jkIabjFNVzCUeKfoQsM6R3saImkUnjx0QYdLwJHBjY9ifEcmjDamJDVfknWm1yxZPxQ=="
   "resolved" "https://registry.npmjs.org/styled-components/-/styled-components-5.2.1.tgz"
   "version" "5.2.1"

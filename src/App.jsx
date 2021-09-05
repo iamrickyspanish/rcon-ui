@@ -3,7 +3,7 @@ import "./styles.css";
 import cookie from "cookie";
 import { Grommet, Grid, Box, Text, Button, Layer } from "grommet";
 
-import CommandForm from "Command/Form";
+import CommandPage from "Command/Page";
 import SessionForm from "Session/Form";
 import NotificationProvider from "Notification/Provider";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -49,7 +49,7 @@ export default function App() {
               {hasSession && <Button label="logout" onClick={onSessionEnd} />}
             </Box>
             {hasSession ? (
-              <CommandForm />
+              <CommandPage />
             ) : (
               <SessionForm onSessionStart={onSessionStart} />
             )}
