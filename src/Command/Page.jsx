@@ -9,7 +9,7 @@ import {
   Spinner,
   Layer
 } from "grommet";
-import { Terminal } from "grommet-icons";
+import { Terminal, Chat } from "grommet-icons";
 import { useMutation } from "react-query";
 import { command } from "./api";
 import StatusMonitor from "./StatusMonitor";
@@ -22,45 +22,67 @@ const CommandForm = () => {
     mutate("status");
   }, []);
 
-  const [isConsoleActive, setConsoleActive] = React.useState(false);
+  const ref = React.useRef();
+
+  const [activeBottomTab, setActiveBottomTab] = React.useState(null);
 
   const isReady = data && !isLoading;
 
-  // const [values, setValues] = React.useState({ message: "" });
+  const showConsole = React.useCallback(() => {
+    setActiveBottomTab("console");
+  }, [activeBottomTab]);
 
-  const toggleConsoleActive = React.useCallback(() => {
-    setConsoleActive(!isConsoleActive);
-  }, [isConsoleActive]);
+  const showSay = React.useCallback(() => {
+    setActiveBottomTab("say");
+  }, [activeBottomTab]);
+
+  const onLayerClose = React.useCallback(() => {
+    setActiveBottomTab(null);
+  }, []);
 
   return isReady ? (
     <>
       <Grid rows={["flex", "auto", "auto"]}>
-        <StatusMonitor initialStatus={data.data} />
-        <Box pad="medium">
-          <SayForm />
+        <Box ref={ref}>
+          <StatusMonitor initialStatus={data.data} />
         </Box>
+        {/* <Box pad="medium">
+          <SayForm />
+        </Box> */}
         <Box
           pad={{ horizontal: "medium", vertical: "xsmall" }}
-          justify="center"
+          align="center"
+          direction="row"
+          justify="around"
         >
           <Button
             plain
             icon={<Terminal size="small" />}
-            onClick={toggleConsoleActive}
+            onClick={showConsole}
             label="console"
+          />
+          <Button
+            plain
+            icon={<Chat size="small" />}
+            onClick={showSay}
+            label="say"
           />
         </Box>
       </Grid>
-      {isConsoleActive && (
+      {activeBottomTab && (
         <Layer
-          position="top"
+          position="bottom"
           full="horizontal"
-          modal
-          onClickOutside={toggleConsoleActive}
-          onEsc={toggleConsoleActive}
+          modal={false}
+          onClickOutside={onLayerClose}
+          onEsc={onLayerClose}
+          target={ref.current}
+          animation="fadeIn"
+          responsive={false}
         >
-          <Box fill="horizontal" overflow="auto" height="medium" pad="medium">
-            <RawForm />
+          <Box fill="horizontal" pad="medium" border="top">
+            {activeBottomTab == "console" && <RawForm />}
+            {activeBottomTab == "say" && <SayForm />}
           </Box>
         </Layer>
       )}
