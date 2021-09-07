@@ -1,14 +1,16 @@
 import React from "react";
 import "./styles.css";
-import cookie from "cookie";
-import { Grommet, Grid, Box, Text, Button, Layer } from "grommet";
+import { Grommet, Grid, Box, Text, Button, Layer, Spinner } from "grommet";
 
 import CommandPage from "Command/Page";
 import SessionForm from "Session/Form";
 import NotificationProvider from "Notification/Provider";
 import { QueryClient, QueryClientProvider } from "react-query";
+import api from "./api";
+
 export default function App() {
   const [hasSession, setHasSession] = React.useState(false);
+  const [isReady, setReady] = React.useState(false);
 
   const onSessionStart = () => {
     setHasSession(true);
@@ -17,6 +19,34 @@ export default function App() {
   const onSessionEnd = () => {
     setHasSession(false);
   };
+
+  React.useEffect(() => {
+    api.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (401 === error.response.status) {
+          console.log("axios interceptor, set session false");
+          setHasSession(false);
+        } else {
+          return Promise.reject(error);
+        }
+      }
+    );
+    (async () => {
+      try {
+        const r = await api.get("/");
+        console.log("r", r);
+        setHasSession(!!r);
+      } catch (e) {
+        console.log("catch, set session false");
+        setHasSession(false);
+      } finally {
+        setReady(true);
+      }
+    })();
+  }, []);
 
   const queryClient = new QueryClient();
 
@@ -48,10 +78,16 @@ export default function App() {
               RCON PANEL
               {hasSession && <Button label="logout" onClick={onSessionEnd} />}
             </Box>
-            {hasSession ? (
-              <CommandPage />
+            {isReady ? (
+              hasSession ? (
+                <CommandPage />
+              ) : (
+                <SessionForm onSessionStart={onSessionStart} />
+              )
             ) : (
-              <SessionForm onSessionStart={onSessionStart} />
+              <Box align="center" justify="center">
+                <Spinner size="xlarge" />
+              </Box>
             )}
             <Box
               background="brand"
