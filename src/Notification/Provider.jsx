@@ -86,9 +86,9 @@ const NotificationContainer = () => {
 
   return (
     <Layer
+      minHeight={0}
       position="bottom"
       modal={false}
-      // margin={{ vertical: "medium", horizontal: "small" }}
       responsive={false}
       plain
       full="horizontal"
@@ -103,6 +103,7 @@ const NotificationContainer = () => {
           />
         </Box>
       )}
+
       <Box gap="small" direction="column-reverse">
         {notifications.map((notification) => (
           <Box animation="fadeIn" elevation="medium" key={notification.id}>
@@ -153,8 +154,8 @@ export default ({ children, ...restProps }) => {
 
   return (
     <NotificationContext.Provider value={ctx}>
-      <NotificationContainer />
       {children}
+      {!!notifications.length && <NotificationContainer />}
     </NotificationContext.Provider>
   );
 };

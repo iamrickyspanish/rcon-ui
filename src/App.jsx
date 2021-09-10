@@ -1,15 +1,15 @@
 import React from "react";
 import "./styles.css";
-import { Grommet, Grid, Box, Text, Button, Layer, Spinner } from "grommet";
-
+import { Grommet } from "grommet";
 import CommandPage from "Command/Page";
 import SessionForm from "Session/Form";
 import NotificationProvider from "Notification/Provider";
 import { QueryClient, QueryClientProvider } from "react-query";
 import api from "./api";
+import LoadingPlaceholder from "Placeholder/Loading";
 
-export default function App() {
-  const [hasSession, setHasSession] = React.useState(false);
+export default () => {
+  const [hasSession, setHasSession] = React.useState(true);
   const [isReady, setReady] = React.useState(false);
 
   const onSessionStart = () => {
@@ -37,10 +37,8 @@ export default function App() {
     (async () => {
       try {
         const r = await api.get("/");
-        console.log("r", r);
         setHasSession(!!r);
       } catch (e) {
-        console.log("catch, set session false");
         setHasSession(false);
       } finally {
         setReady(true);
@@ -58,47 +56,30 @@ export default function App() {
             font: {
               family: "sans"
             }
+            // elevation: {
+            //   smallReversed: "0px 2px 4px rgba(100, 100, 100, 0.50)"
+            // }
+          },
+          button: {
+            border: {
+              radius: 0
+            }
           }
         }}
         full
-        style={{ overflow: "hidden" }}
-        overflow="hidden"
       >
         <NotificationProvider>
-          <Grid fill rows={["auto", "flex", "auto"]} overflow="hidden">
-            <Box
-              height={{ min: "auto" }}
-              pad="medium"
-              align="center"
-              direction="row"
-              background="brand"
-              gap="small"
-              margin={{ bottom: "medium" }}
-            >
-              RCON PANEL
-              {hasSession && <Button label="logout" onClick={onSessionEnd} />}
-            </Box>
-            {isReady ? (
-              hasSession ? (
-                <CommandPage />
-              ) : (
-                <SessionForm onSessionStart={onSessionStart} />
-              )
+          {isReady ? (
+            hasSession ? (
+              <CommandPage onSeccionEnd={onSessionEnd} />
             ) : (
-              <Box align="center" justify="center">
-                <Spinner size="xlarge" />
-              </Box>
-            )}
-            <Box
-              background="brand"
-              pad={{ horizontal: "medium", vertical: "small" }}
-              height={{ min: "auto" }}
-            >
-              <Text size="small">footer</Text>
-            </Box>
-          </Grid>
+              <SessionForm onSessionStart={onSessionStart} />
+            )
+          ) : (
+            <LoadingPlaceholder />
+          )}
         </NotificationProvider>
       </Grommet>
     </QueryClientProvider>
   );
-}
+};

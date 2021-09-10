@@ -1,82 +1,80 @@
 import React from "react";
-import { useFormik } from "formik";
-import { Box, TextInput, Select, FormField, Button, Grid } from "grommet";
+import {
+  Box,
+  TextInput,
+  Select,
+  FormField,
+  Button,
+  Grid,
+  Text,
+  Form
+} from "grommet";
 import { create } from "./api";
 import { useMutation } from "react-query";
 import useNotifications from "Notification/use";
+import PageLayout from "Layout/Page";
 
 const gameOptions = Object.freeze([
   { value: "cstrike", label: "Counter Strike 1.6" }
 ]);
 
 const SessionForm = ({ onSessionStart }) => {
-  // const { isLoading, error, data } = useQuery("repoData", create(values));
   const { showNotification } = useNotifications();
-  const formik = useFormik({
-    initialValues: {
-      game: "cstrike",
-      host: null,
-      port: 27015,
-      password: null
+  const [value, setValue] = React.useState({
+    game: "cstrike",
+    host: "panel.frag.world", //null,
+    port: 27015,
+    password: "affe" //null
+  });
+  const { mutate, isLoading } = useMutation(create, {
+    onSuccess: (data) => {
+      showNotification("Connected", "success");
+      onSessionStart(data);
     },
-    validateOnChange: false,
-    validateOnBlur: false,
-    onSubmit: async (values, { setSubmitting }) => {
-      setSubmitting(true);
-      try {
-        const result = await create(values);
-        console.log("r", result);
-        onSessionStart(result);
-        showNotification("Connected", "success");
-      } catch (e) {
-        console.log(e);
-        showNotification(e.message, "error");
-        throw e;
-      } finally {
-        setSubmitting(false);
-      }
-    }
+    onError: (e) => showNotification(e.message, "error")
   });
 
+  const handleSubmit = React.useCallback(async (e) => {
+    mutate(e.value);
+  }, []);
+
   return (
-    <Grid rows={["flex", "auto"]} as="form" onSubmit={formik.handleSubmit} fill>
-      <Box flex overflow="auto">
-        <Box>
-          <FormField label="game" error={formik.errors.game}>
+    <PageLayout
+      as={Form}
+      value={value}
+      onChange={setValue}
+      onSubmit={handleSubmit}
+      plainMain
+      plainFooter
+      header={<Text>CONNECT TO SERVER</Text>}
+      main={
+        <Grid pad={{ vertical: "medium" }} rows={["auto"]}>
+          <FormField label="game">
             <Select
-              {...formik.getFieldProps("game")}
+              name="game"
               placeholder="Select"
               labelKey="label"
               valueKey={{ key: "value", reduce: true }}
               options={gameOptions}
-              disabled={formik.isSubmitting}
+              disabled={isLoading}
             />
           </FormField>
-          <FormField label="host" error={formik.errors.host}>
-            <TextInput
-              {...formik.getFieldProps("host")}
-              disabled={formik.isSubmitting}
-            />
+          <FormField label="host">
+            <TextInput name="host" disabled={isLoading} />
           </FormField>
-          <FormField label="port" error={formik.errors.port}>
-            <TextInput
-              {...formik.getFieldProps("port")}
-              disabled={formik.isSubmitting}
-            />
+          <FormField label="port">
+            <TextInput name="port" disabled={isLoading} />
           </FormField>
-          <FormField label="password" error={formik.errors.password}>
-            <TextInput
-              type="password"
-              {...formik.getFieldProps("password")}
-              disabled={formik.isSubmitting}
-            />
+          <FormField label="password">
+            <TextInput name="password" type="password" disabled={isLoading} />
           </FormField>
-        </Box>
-      </Box>
-      <Box pad="medium">
-        <Button label="START" type="submit" disabled={formik.isSubmitting} />
-      </Box>
-    </Grid>
+        </Grid>
+      }
+      footer={
+        <Button primary fill label="START" type="submit" disabled={isLoading} />
+      }
+    />
+    // </Form>
   );
 };
 

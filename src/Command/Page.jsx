@@ -1,20 +1,14 @@
-import React, { useEffect } from "react";
-import {
-  Box,
-  Form,
-  FormField,
-  TextInput,
-  Button,
-  Grid,
-  Spinner,
-  Layer
-} from "grommet";
+import React from "react";
+import { Box, Button, Layer } from "grommet";
 import { Terminal, Chat } from "grommet-icons";
 import { useMutation } from "react-query";
 import { command } from "./api";
 import StatusMonitor from "./StatusMonitor";
 import SayForm from "./SayForm";
 import RawForm from "./RawForm";
+import PageLayout from "Layout/Page";
+import LoadingPlaceholder from "Placeholder/Loading";
+
 const CommandForm = () => {
   const { data, isSuccess, isError, isLoading, mutate, error } =
     useMutation(command);
@@ -28,47 +22,68 @@ const CommandForm = () => {
 
   const isReady = data && !isLoading;
 
-  const showConsole = React.useCallback(() => {
-    setActiveBottomTab("console");
-  }, [activeBottomTab]);
+  const showConsole = React.useCallback(
+    (e) => {
+      activeBottomTab !== "console" && setActiveBottomTab("console");
+    },
+    [activeBottomTab]
+  );
 
-  const showSay = React.useCallback(() => {
-    setActiveBottomTab("say");
-  }, [activeBottomTab]);
+  const showSay = React.useCallback(
+    (e) => {
+      activeBottomTab !== "say" && setActiveBottomTab("say");
+    },
+    [activeBottomTab]
+  );
 
   const onLayerClose = React.useCallback(() => {
-    setActiveBottomTab(null);
+    setTimeout(() => setActiveBottomTab(null), 0);
   }, []);
 
   return isReady ? (
     <>
-      <Grid rows={["flex", "auto", "auto"]}>
-        <Box ref={ref}>
-          <StatusMonitor initialStatus={data.data} />
-        </Box>
-        {/* <Box pad="medium">
-          <SayForm />
-        </Box> */}
-        <Box
-          pad={{ horizontal: "medium", vertical: "xsmall" }}
-          align="center"
-          direction="row"
-          justify="around"
-        >
-          <Button
-            plain
-            icon={<Terminal size="small" />}
-            onClick={showConsole}
-            label="console"
-          />
-          <Button
-            plain
-            icon={<Chat size="small" />}
-            onClick={showSay}
-            label="say"
-          />
-        </Box>
-      </Grid>
+      <PageLayout
+        plainMain
+        plainFooter
+        header={"Dashboard"}
+        main={
+          <Box ref={ref} fill>
+            <StatusMonitor initialStatus={data.data} />
+          </Box>
+        }
+        footer={
+          <>
+            <Box
+              background={activeBottomTab === "console" ? "white" : "brand"}
+              fill="horizontal"
+              height="xxsmall"
+            >
+              <Button
+                plain
+                icon={<Terminal size="small" />}
+                onClick={showConsole}
+                label="console"
+                hoverIndicator
+                fill
+              />
+            </Box>
+            <Box
+              height="xxsmall"
+              background={activeBottomTab === "say" ? "white" : "brand"}
+              fill="horizontal"
+            >
+              <Button
+                plain
+                icon={<Chat size="small" />}
+                onClick={showSay}
+                label="say"
+                hoverIndicator
+                fill
+              />
+            </Box>
+          </>
+        }
+      />
       {activeBottomTab && (
         <Layer
           position="bottom"
@@ -88,9 +103,7 @@ const CommandForm = () => {
       )}
     </>
   ) : (
-    <Box full align="center" justify="center">
-      <Spinner size="xlarge" />
-    </Box>
+    <LoadingPlaceholder />
   );
 };
 
