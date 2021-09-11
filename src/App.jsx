@@ -8,6 +8,10 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import api from "./api";
 import LoadingPlaceholder from "Placeholder/Loading";
 
+const AppContext = React.createContext();
+
+export const useApp = () => React.useContext(AppContext);
+
 export default () => {
   const [hasSession, setHasSession] = React.useState(true);
   const [isReady, setReady] = React.useState(false);
@@ -46,40 +50,44 @@ export default () => {
     })();
   }, []);
 
+  const ctx = {
+    startSession: onSessionStart,
+    endSession: onSessionEnd
+  };
+
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Grommet
-        theme={{
-          global: {
-            font: {
-              family: "sans"
+      <AppContext.Provider value={ctx}>
+        <Grommet
+          theme={{
+            global: {
+              font: {
+                family: "sans"
+              }
+            },
+            button: {
+              border: {
+                radius: 0
+              }
             }
-            // elevation: {
-            //   smallReversed: "0px 2px 4px rgba(100, 100, 100, 0.50)"
-            // }
-          },
-          button: {
-            border: {
-              radius: 0
-            }
-          }
-        }}
-        full
-      >
-        <NotificationProvider>
-          {isReady ? (
-            hasSession ? (
-              <CommandPage onSeccionEnd={onSessionEnd} />
+          }}
+          full
+        >
+          <NotificationProvider>
+            {isReady ? (
+              hasSession ? (
+                <CommandPage onSessionEnd={onSessionEnd} />
+              ) : (
+                <SessionForm onSessionStart={onSessionStart} />
+              )
             ) : (
-              <SessionForm onSessionStart={onSessionStart} />
-            )
-          ) : (
-            <LoadingPlaceholder />
-          )}
-        </NotificationProvider>
-      </Grommet>
+              <LoadingPlaceholder />
+            )}
+          </NotificationProvider>
+        </Grommet>
+      </AppContext.Provider>
     </QueryClientProvider>
   );
 };

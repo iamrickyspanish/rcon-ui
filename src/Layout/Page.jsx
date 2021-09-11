@@ -19,7 +19,6 @@ export default (props) => {
   };
   const mainProps = {
     pad: plainMain || plain ? "none" : "medium"
-    // background: props.plainHeader || plain ? "inherit" : "white"
   };
   const footerProps = {
     pad: {

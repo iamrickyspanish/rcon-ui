@@ -62,9 +62,9 @@ const StatusMonitor = (props) => {
         <Text weight="bold">{hostname}</Text>
       </Box>
       <Box pad="medium" direction="row" justify="between" align="center">
-        <Text>Map ({map})</Text>
+        <Text>map: {map}</Text>
         <Text>
-          Players ({playerCount}/{maxPlayers})
+          {playerCount}/{maxPlayers} players
         </Text>
       </Box>
       {players.length ? null : (

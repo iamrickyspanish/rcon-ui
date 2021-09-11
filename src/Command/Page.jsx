@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, Layer } from "grommet";
-import { Terminal, Chat } from "grommet-icons";
+import { Terminal, Chat, Power } from "grommet-icons";
 import { useMutation } from "react-query";
 import { command } from "./api";
 import StatusMonitor from "./StatusMonitor";
@@ -9,7 +9,7 @@ import RawForm from "./RawForm";
 import PageLayout from "Layout/Page";
 import LoadingPlaceholder from "Placeholder/Loading";
 
-const CommandForm = () => {
+const CommandForm = (props) => {
   const { data, isSuccess, isError, isLoading, mutate, error } =
     useMutation(command);
   React.useEffect(() => {
@@ -45,7 +45,17 @@ const CommandForm = () => {
       <PageLayout
         plainMain
         plainFooter
-        header={"Dashboard"}
+        header={
+          <Box
+            fill="horizontal"
+            direction="row"
+            align="center"
+            justify="between"
+          >
+            Dashboard
+            <Power onClick={props.onSessionEnd} />
+          </Box>
+        }
         main={
           <Box ref={ref} fill>
             <StatusMonitor initialStatus={data.data} />
