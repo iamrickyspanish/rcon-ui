@@ -10,8 +10,7 @@ import PageLayout from "Layout/Page";
 import LoadingPlaceholder from "Placeholder/Loading";
 
 const CommandForm = (props) => {
-  const { data, isSuccess, isError, isLoading, mutate, error } =
-    useMutation(command);
+  const { data, isLoading, mutate } = useMutation(command);
   React.useEffect(() => {
     mutate("status");
   }, []);
@@ -20,7 +19,7 @@ const CommandForm = (props) => {
 
   const [activeBottomTab, setActiveBottomTab] = React.useState(null);
 
-  const isReady = data && !isLoading;
+  const isReady = true; //data && !isLoading;
 
   const showConsole = React.useCallback(
     (e) => {
@@ -58,7 +57,9 @@ const CommandForm = (props) => {
         }
         main={
           <Box ref={ref} fill>
-            <StatusMonitor initialStatus={data.data} />
+            <StatusMonitor
+            // initialStatus={data.data}
+            />
           </Box>
         }
         footer={

@@ -50,22 +50,26 @@ const StatusMonitor = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (data) setStatus(data.data);
+    if (data && data.data) setStatus(data.data);
   }, [data]);
-  if (data && data.data) parseStatus(data.data);
 
-  const { hostname, players, playerCount, maxPlayers, map } =
-    parseStatus(status);
+  const {
+    hostname,
+    players = [],
+    playerCount,
+    maxPlayers,
+    map
+  } = status ? parseStatus(status) : {};
   return (
-    <Grid rows={["auto", "auto", "flex"]} fill>
-      <Box border="bottom" pad="medium">
+    <Grid rows={["auto", "flex"]} fill>
+      <Box border="bottom" pad="medium" gap="xsmall">
         <Text weight="bold">{hostname}</Text>
-      </Box>
-      <Box pad="medium" direction="row" justify="between" align="center">
-        <Text>map: {map}</Text>
-        <Text>
-          {playerCount}/{maxPlayers} players
-        </Text>
+        <Box direction="row" justify="between" align="center">
+          <Text size="small">{map}</Text>
+          <Text size="small">
+            {playerCount}/{maxPlayers} players
+          </Text>
+        </Box>
       </Box>
       {players.length ? null : (
         <Box fill align="center" justify="center">
@@ -74,6 +78,10 @@ const StatusMonitor = (props) => {
       )}
     </Grid>
   );
+};
+
+StatusMonitor.defautProps = {
+  initialStatus: null
 };
 
 export default StatusMonitor;
